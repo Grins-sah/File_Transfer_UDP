@@ -1,0 +1,4 @@
+/home/grins/Documents/CN/File_Transfer_UDP/build/CMakeFiles/server.dir
+/home/grins/Documents/CN/File_Transfer_UDP/build/CMakeFiles/client.dir
+/home/grins/Documents/CN/File_Transfer_UDP/build/CMakeFiles/edit_cache.dir
+/home/grins/Documents/CN/File_Transfer_UDP/build/CMakeFiles/rebuild_cache.dir
