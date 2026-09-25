@@ -80,6 +80,8 @@ CMakeFiles/client.dir/src/client.cpp.o
  /usr/include/bits/socket_type.h
  /usr/include/bits/ss_flags.h
  /usr/include/bits/stat.h
+ /usr/include/bits/statx-generic.h
+ /usr/include/bits/statx.h
  /usr/include/bits/stdint-intn.h
  /usr/include/bits/stdint-least.h
  /usr/include/bits/stdint-uintn.h
@@ -122,6 +124,8 @@ CMakeFiles/client.dir/src/client.cpp.o
  /usr/include/bits/types/struct_osockaddr.h
  /usr/include/bits/types/struct_sched_param.h
  /usr/include/bits/types/struct_sigstack.h
+ /usr/include/bits/types/struct_statx.h
+ /usr/include/bits/types/struct_statx_timestamp.h
  /usr/include/bits/types/struct_timespec.h
  /usr/include/bits/types/struct_timeval.h
  /usr/include/bits/types/struct_tm.h
@@ -454,6 +458,7 @@ CMakeFiles/client.dir/src/client.cpp.o
  /usr/include/linux/limits.h
  /usr/include/linux/posix_types.h
  /usr/include/linux/sched/types.h
+ /usr/include/linux/stat.h
  /usr/include/linux/stddef.h
  /usr/include/linux/types.h
  /usr/include/locale.h
@@ -474,6 +479,7 @@ CMakeFiles/client.dir/src/client.cpp.o
  /usr/include/sys/select.h
  /usr/include/sys/single_threaded.h
  /usr/include/sys/socket.h
+ /usr/include/sys/stat.h
  /usr/include/sys/syscall.h
  /usr/include/sys/time.h
  /usr/include/sys/types.h

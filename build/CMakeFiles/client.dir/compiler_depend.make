@@ -79,6 +79,8 @@ CMakeFiles/client.dir/src/client.cpp.o: /home/grins/Documents/CN/File_Transfer_U
   /usr/include/bits/socket_type.h \
   /usr/include/bits/ss_flags.h \
   /usr/include/bits/stat.h \
+  /usr/include/bits/statx-generic.h \
+  /usr/include/bits/statx.h \
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
@@ -121,6 +123,8 @@ CMakeFiles/client.dir/src/client.cpp.o: /home/grins/Documents/CN/File_Transfer_U
   /usr/include/bits/types/struct_osockaddr.h \
   /usr/include/bits/types/struct_sched_param.h \
   /usr/include/bits/types/struct_sigstack.h \
+  /usr/include/bits/types/struct_statx.h \
+  /usr/include/bits/types/struct_statx_timestamp.h \
   /usr/include/bits/types/struct_timespec.h \
   /usr/include/bits/types/struct_timeval.h \
   /usr/include/bits/types/struct_tm.h \
@@ -453,6 +457,7 @@ CMakeFiles/client.dir/src/client.cpp.o: /home/grins/Documents/CN/File_Transfer_U
   /usr/include/linux/limits.h \
   /usr/include/linux/posix_types.h \
   /usr/include/linux/sched/types.h \
+  /usr/include/linux/stat.h \
   /usr/include/linux/stddef.h \
   /usr/include/linux/types.h \
   /usr/include/locale.h \
@@ -473,6 +478,7 @@ CMakeFiles/client.dir/src/client.cpp.o: /home/grins/Documents/CN/File_Transfer_U
   /usr/include/sys/select.h \
   /usr/include/sys/single_threaded.h \
   /usr/include/sys/socket.h \
+  /usr/include/sys/stat.h \
   /usr/include/sys/syscall.h \
   /usr/include/sys/time.h \
   /usr/include/sys/types.h \
@@ -540,6 +546,8 @@ client: /usr/lib/Scrt1.o \
 
 /usr/include/sys/time.h:
 
+/usr/include/sys/stat.h:
+
 /usr/include/sys/cdefs.h:
 
 /usr/include/stdlib.h:
@@ -547,6 +555,8 @@ client: /usr/lib/Scrt1.o \
 /usr/include/netinet/in.h:
 
 /usr/include/linux/stddef.h:
+
+/usr/include/linux/stat.h:
 
 /usr/include/linux/sched/types.h:
 
@@ -730,8 +740,6 @@ client: /usr/lib/Scrt1.o \
 
 /usr/include/c++/15.2.1/bits/unique_ptr.h:
 
-/usr/include/c++/15.2.1/bits/unique_lock.h:
-
 /usr/include/c++/15.2.1/deque:
 
 /usr/include/c++/15.2.1/bits/unicode-data.h:
@@ -784,13 +792,13 @@ client: /usr/lib/Scrt1.o \
 
 /usr/include/c++/15.2.1/bits/stl_deque.h:
 
-/usr/include/bits/types/wint_t.h:
+/usr/include/c++/15.2.1/bits/stl_bvector.h:
 
-/usr/include/bits/sigcontext.h:
+/usr/include/pthread.h:
 
-/usr/include/setjmp.h:
+/usr/include/c++/15.2.1/bits/stl_uninitialized.h:
 
-/usr/include/c++/15.2.1/bits/memoryfwd.h:
+/usr/include/c++/15.2.1/bits/stl_algo.h:
 
 /usr/include/bits/types/struct_tm.h:
 
@@ -828,14 +836,6 @@ CMakeFiles/client.dir/src/client.cpp.o:
 
 /usr/include/c++/15.2.1/bits/parse_numbers.h:
 
-/usr/include/bits/types/clock_t.h:
-
-/usr/include/c++/15.2.1/iostream:
-
-/usr/include/c++/15.2.1/bits/stl_queue.h:
-
-/usr/include/bits/mathcalls.h:
-
 /usr/include/bits/types/__locale_t.h:
 
 /usr/include/bits/types/__fpos64_t.h:
@@ -870,13 +870,21 @@ CMakeFiles/client.dir/src/client.cpp.o:
 
 /usr/include/bits/types/time_t.h:
 
-/usr/include/pthread.h:
-
-/usr/include/c++/15.2.1/bits/stl_uninitialized.h:
-
-/usr/include/c++/15.2.1/bits/stl_algo.h:
-
 /usr/include/bits/stdint-least.h:
+
+/usr/include/bits/types/clock_t.h:
+
+/usr/include/c++/15.2.1/iostream:
+
+/usr/include/c++/15.2.1/bits/stl_queue.h:
+
+/usr/include/bits/mathcalls.h:
+
+/usr/include/bits/statx-generic.h:
+
+/usr/include/c++/15.2.1/pstl/execution_defs.h:
+
+/usr/include/bits/in.h:
 
 /usr/include/bits/types/error_t.h:
 
@@ -912,7 +920,11 @@ CMakeFiles/client.dir/src/client.cpp.o:
 
 /usr/include/bits/posix2_lim.h:
 
-/usr/include/c++/15.2.1/bits/stl_bvector.h:
+/usr/include/sys/syscall.h:
+
+/usr/include/c++/15.2.1/bits/stl_algobase.h:
+
+/usr/include/bits/signum-arch.h:
 
 /usr/include/c++/15.2.1/bits/char_traits.h:
 
@@ -960,8 +972,6 @@ CMakeFiles/client.dir/src/client.cpp.o:
 
 /usr/include/bits/endianness.h:
 
-/usr/include/c++/15.2.1/bits/std_mutex.h:
-
 /usr/include/c++/15.2.1/cuchar:
 
 /usr/include/c++/15.2.1/climits:
@@ -1000,9 +1010,9 @@ CMakeFiles/client.dir/src/client.cpp.o:
 
 /usr/include/c++/15.2.1/limits:
 
-/usr/include/bits/struct_mutex.h:
-
 /usr/include/c++/15.2.1/bits/stl_construct.h:
+
+/usr/include/bits/struct_mutex.h:
 
 /usr/include/c++/15.2.1/bits/istream.tcc:
 
@@ -1080,11 +1090,9 @@ CMakeFiles/client.dir/src/client.cpp.o:
 
 /usr/include/bits/types/siginfo_t.h:
 
-/usr/include/sys/syscall.h:
+/usr/include/c++/15.2.1/bits/unique_lock.h:
 
-/usr/include/bits/signum-arch.h:
-
-/usr/include/c++/15.2.1/bits/stl_algobase.h:
+/usr/include/bits/statx.h:
 
 /usr/include/c++/15.2.1/bits/locale_facets.tcc:
 
@@ -1097,6 +1105,10 @@ CMakeFiles/client.dir/src/client.cpp.o:
 /usr/include/c++/15.2.1/bits/atomic_timed_wait.h:
 
 /usr/include/bits/fcntl.h:
+
+/usr/include/c++/15.2.1/bits/std_mutex.h:
+
+/usr/include/bits/types/struct_statx.h:
 
 /usr/include/c++/15.2.1/latch:
 
@@ -1136,6 +1148,14 @@ CMakeFiles/client.dir/src/client.cpp.o:
 
 /usr/include/bits/getopt_posix.h:
 
+/usr/include/bits/sigcontext.h:
+
+/usr/include/bits/types/wint_t.h:
+
+/usr/include/setjmp.h:
+
+/usr/include/c++/15.2.1/bits/memoryfwd.h:
+
 /usr/include/asm/bitsperlong.h:
 
 /usr/include/c++/15.2.1/bits/alloc_traits.h:
@@ -1151,10 +1171,6 @@ CMakeFiles/client.dir/src/client.cpp.o:
 /usr/include/c++/15.2.1/bits/regex_automaton.h:
 
 /usr/include/bits/types/struct_sched_param.h:
-
-/usr/include/c++/15.2.1/pstl/execution_defs.h:
-
-/usr/include/bits/in.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/limits.h:
 
@@ -1185,10 +1201,6 @@ CMakeFiles/client.dir/src/client.cpp.o:
 /usr/include/c++/15.2.1/bits/move.h:
 
 /usr/include/bits/libc-header-start.h:
-
-/usr/include/c++/15.2.1/tr1/poly_hermite.tcc:
-
-/usr/include/bits/types/timer_t.h:
 
 /usr/include/bits/mathcalls-narrow.h:
 
@@ -1233,6 +1245,10 @@ CMakeFiles/client.dir/src/client.cpp.o:
 /usr/include/c++/15.2.1/complex:
 
 /usr/include/c++/15.2.1/bits/regex_error.h:
+
+/usr/include/c++/15.2.1/tr1/poly_hermite.tcc:
+
+/usr/include/bits/types/timer_t.h:
 
 /usr/include/bits/uintn-identity.h:
 
@@ -1376,6 +1392,14 @@ CMakeFiles/client.dir/src/client.cpp.o:
 
 /usr/include/c++/15.2.1/bits/fs_fwd.h:
 
+/usr/lib/crtn.o:
+
+/usr/include/c++/15.2.1/bits/stl_numeric.h:
+
+/usr/include/c++/15.2.1/bits/regex_compiler.h:
+
+/usr/include/c++/15.2.1/bits/functional_hash.h:
+
 /usr/include/asm/sockios.h:
 
 /usr/include/c++/15.2.1/bits/gslice.h:
@@ -1464,14 +1488,6 @@ CMakeFiles/client.dir/src/client.cpp.o:
 
 /usr/include/c++/15.2.1/bits/ranges_uninitialized.h:
 
-/usr/lib/crtn.o:
-
-/usr/include/c++/15.2.1/bits/stl_numeric.h:
-
-/usr/include/c++/15.2.1/bits/functional_hash.h:
-
-/usr/include/c++/15.2.1/bits/regex_compiler.h:
-
 /usr/include/c++/15.2.1/bits/regex_executor.h:
 
 /usr/lib/crti.o:
@@ -1497,6 +1513,8 @@ CMakeFiles/client.dir/src/client.cpp.o:
 /usr/include/sys/single_threaded.h:
 
 /usr/include/c++/15.2.1/bits/shared_ptr.h:
+
+/usr/include/bits/types/struct_statx_timestamp.h:
 
 /usr/include/c++/15.2.1/bits/locale_classes.tcc:
 

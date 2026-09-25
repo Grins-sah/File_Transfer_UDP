@@ -353,4 +353,8 @@ CMakeFiles/client.dir/src/client.cpp.o: \
  /usr/include/bits/sockaddr.h /usr/include/asm/socket.h \
  /usr/include/asm-generic/socket.h /usr/include/asm/sockios.h \
  /usr/include/asm-generic/sockios.h \
- /usr/include/bits/types/struct_osockaddr.h /usr/include/bits/in.h
+ /usr/include/bits/types/struct_osockaddr.h /usr/include/bits/in.h \
+ /usr/include/sys/stat.h /usr/include/bits/statx.h \
+ /usr/include/linux/stat.h /usr/include/bits/statx-generic.h \
+ /usr/include/bits/types/struct_statx_timestamp.h \
+ /usr/include/bits/types/struct_statx.h
