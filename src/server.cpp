@@ -4,27 +4,28 @@
 #include<sys/socket.h>
 #include<netinet/in.h>
 #include<fcntl.h>
-
+#include "packet.hpp"
 using namespace std;
-struct packet{
-    uint16_t size;
-    char data[1024];
-};
-void serialize(packet& p,char* out){
-    size_t offset = 0;
-    memcpy(out+offset,&p.size,sizeof(p.size));
-    offset+=sizeof(p.size);
-    memcpy(out+offset,&p.data,sizeof(p.data));
+int rename_by_fd(int fd, const char *new_name) {
+    char proc_path[256];
+    char actual_path[PATH_MAX];
+    // 1. Construct the /proc path for this file descriptor
+    snprintf(proc_path, sizeof(proc_path), "/proc/self/fd/%d", fd);
+    // 2. Read the symbolic link to get the real path
+    ssize_t len = readlink(proc_path, actual_path, sizeof(actual_path) - 1);
+    if (len == -1) {
+        perror("readlink failed");
+        return -1;
+    }
+    actual_path[len] = '\0'; // Null-terminate the string
+    // 3. Rename the file using its real path
+    if (rename(actual_path, new_name) == -1) {
+        perror("rename failed");
+        return -1;
+    }
 
+    return 0;
 }
-struct packet deserialize(char* buffer){
-    struct packet p;
-    size_t offset = 0;
-    memcpy(&p.size,buffer+offset,sizeof(p.size));
-    offset+=sizeof(p.size);
-    memcpy(&p.data,buffer+offset,sizeof(p.data));
-    return p;
-};
 int main(){
     const char* filePath = "received.txt";
     int fd = open(filePath, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -60,13 +61,15 @@ int main(){
             continue;
         }
         auto p = deserialize(buffer);
-        if(p.size==INT16_MAX){
-            cout<<"Request has came to receive "<<p.data<<" packets"<<endl;
+        if(p.seq_no==INT16_MAX){
+            p.data[p.size]=='\0';
+            cout<<"Request has came to receive "<<p.data<<" packets"<<" "<<p.data<<endl;
+            rename_by_fd(fd,p.data);
             continue;
         }
 
         write(fd,p.data,(p.size));
-        cout<<"Received the packet byte"<<p.size<<endl;
+        cout<<"Received the packet byte"<<p.size<<" with the seq_no "<<p.seq_no<<endl;
         string msg = "received the bytes "+to_string(received_bytes);
         sendto(
             sockfd,

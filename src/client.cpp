@@ -6,6 +6,7 @@
 #include<sys/socket.h>
 #include<iostream>
 #include<sys/stat.h>
+#include "packet.hpp"
 using namespace std;
 off_t get_file_size(int fd){
     struct stat st;
@@ -14,29 +15,13 @@ off_t get_file_size(int fd){
     }
     return -1;
 }
-struct packet{
-    uint16_t size;
-    char data[1024];
-};
-void serialize(packet& p,char* out){
-    size_t offset = 0;
-    memcpy(out+offset,&p.size,sizeof(p.size));
-    offset+=sizeof(p.size);
-    memcpy(out+offset,&p.data,sizeof(p.data));
-
-}
-struct packet deserialize(char* buffer){
-    struct packet p;
-    size_t offset = 0;
-    memcpy(&p.size,buffer+offset,sizeof(p.size));
-    offset+=sizeof(p.size);
-    memcpy(&p.data,buffer+offset,sizeof(p.data));
-    return p;
-};
 int main(){
     cout<<"Enter the file to upload : ";
     string path;
     getline(cin,path);
+    string name;
+    cout<<"Enter the file name :";
+    getline(cin,name);
 
     const int fd = open(path.c_str(),O_RDONLY);
     if(fd<0){
@@ -55,18 +40,18 @@ int main(){
     }
     int nbyte = 0;
     packet st{};
-    st.size = INT16_MAX;
-    int num_bytes = get_file_size(fd);
-    int num_packet = (num_bytes+1023)/1024;
-    strcpy(st.data,to_string(num_packet).c_str());
+    st.size = name.size();
+    st.seq_no = INT16_MAX;
+    
+    memcpy(&st.data,name.c_str(),name.size());
     char out[sizeof(packet)];
-    serialize(st,out);
-    auto p2 = deserialize(out);
-    cout<<"Sending the file containing "<<num_packet<<" packets."<<endl;
+    cout<<"serialization done"<<endl;
+
+    size_t send_size = serialize(st,out);
     sendto(
         sockfd,
         out,
-        sizeof(out),
+        send_size,
         0,
         (sockaddr*)&server_addr,
         sizeof(server_addr)
@@ -75,13 +60,14 @@ int main(){
 
     while( (nbyte =read(fd,buffer,sizeof(buffer)))>0){
         struct packet p{};
+        p.seq_no = cnt;
         p.size = nbyte;
         memcpy(p.data,buffer,nbyte);
-        serialize(p,out);
+        size_t out_len = serialize(p,out);
         sendto(
             sockfd,
             out,
-            sizeof(out),
+            out_len,
             0,
             (sockaddr*)&server_addr,
             sizeof(server_addr)
