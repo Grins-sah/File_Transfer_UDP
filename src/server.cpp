@@ -27,12 +27,7 @@ int rename_by_fd(int fd, const char *new_name) {
     return 0;
 }
 int main(){
-    const char* filePath = "received.txt";
-    int fd = open(filePath, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if(fd<0){
-        perror("File");
-        return 1;
-    }
+    int fd = -1;
     int sockfd = socket(AF_INET,SOCK_DGRAM,0);
     sockaddr_in server_addr{};
     server_addr.sin_family = AF_INET;
@@ -45,7 +40,7 @@ int main(){
     }
     cout<<"The UDP server is running on the port 8080"<<endl;
     char buffer[sizeof(packet)];
-    
+    int cnt = -1;
     while(true){  
         sockaddr_in client_addr;
         socklen_t client_len= sizeof(client_addr);  
@@ -61,20 +56,33 @@ int main(){
             continue;
         }
         auto p = deserialize(buffer);
-        if(p.seq_no==INT16_MAX){
-            p.data[p.size]=='\0';
-            cout<<"Request has came to receive "<<p.data<<" packets"<<" "<<p.data<<endl;
-            rename_by_fd(fd,p.data);
+        if(!verify_checksum_packet(p)){
+            cerr<<"Checksum for the packet "<<p.seq_no<<" is wrong"<<endl;
             continue;
         }
-
-        write(fd,p.data,(p.size));
+        if(p.seq_no==INT16_MAX){
+            p.data[p.size]=='\0';
+            cout<<"Request has came to receive "<<p.data<<endl;
+            fd = open(p.data, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            continue;
+        }
+        if(cnt==5){
+            continue;
+        }
+        if(cnt!=p.seq_no){
+            write(fd,p.data,(p.size));
+        }
+        cnt = p.seq_no;
         cout<<"Received the packet byte"<<p.size<<" with the seq_no "<<p.seq_no<<endl;
-        string msg = "received the bytes "+to_string(received_bytes);
+        ack a;
+        a.seq_no = p.seq_no;
+        a.checksum = crc32(reinterpret_cast<const char*>(&a.seq_no),sizeof(a.seq_no));
+        auto sz = serialize_ack(a,buffer);
+        cout<<a.seq_no<<" "<<a.checksum<<endl;
         sendto(
             sockfd,
-            msg.c_str(),
-            strlen(msg.c_str()),
+            buffer,
+            sz,
             0,
             (sockaddr*)&client_addr,
             client_len
