@@ -5,27 +5,8 @@
 #include<netinet/in.h>
 #include<fcntl.h>
 #include "packet.hpp"
+#include "client.hpp"
 using namespace std;
-int rename_by_fd(int fd, const char *new_name) {
-    char proc_path[256];
-    char actual_path[PATH_MAX];
-    // 1. Construct the /proc path for this file descriptor
-    snprintf(proc_path, sizeof(proc_path), "/proc/self/fd/%d", fd);
-    // 2. Read the symbolic link to get the real path
-    ssize_t len = readlink(proc_path, actual_path, sizeof(actual_path) - 1);
-    if (len == -1) {
-        perror("readlink failed");
-        return -1;
-    }
-    actual_path[len] = '\0'; // Null-terminate the string
-    // 3. Rename the file using its real path
-    if (rename(actual_path, new_name) == -1) {
-        perror("rename failed");
-        return -1;
-    }
-
-    return 0;
-}
 int main(){
     int fd = -1;
     int sockfd = socket(AF_INET,SOCK_DGRAM,0);
@@ -39,8 +20,9 @@ int main(){
         return -1;
     }
     cout<<"The UDP server is running on the port 8080"<<endl;
+    unordered_map<ClientKey,ClientState,ClientKeyHash> m;
+
     char buffer[sizeof(packet)];
-    int cnt = -1;
     while(true){  
         sockaddr_in client_addr;
         socklen_t client_len= sizeof(client_addr);  
@@ -51,6 +33,12 @@ int main(){
             (sockaddr*)&client_addr,
             &client_len
         );
+        ClientKey client_key(client_addr);
+        if(m.count(client_key)==0){
+            m[client_key] = ClientState();
+        }
+        auto& status = m[client_key];
+
         if(received_bytes<=0){
             perror("recvfrom");
             continue;
@@ -61,24 +49,36 @@ int main(){
             continue;
         }
         if(p.seq_no==INT16_MAX){
-            p.data[p.size]=='\0';
-            cout<<"Request has came to receive "<<p.data<<endl;
-            fd = open(p.data, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            p.data[p.size]='\0';
+            // cout<<"New file request of size "<<p.size<<endl;
+            char file_name[1024];
+            memcpy(file_name,p.data,p.size);
+            
+            cout<<"Request has came to receive "<<file_name<<endl;
+            int _fd = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            status.fd = _fd;
+            status.expected_seq = -1;
+            status.file_name = file_name;
+            status.retry_no = 0;
             continue;
         }
-        if(cnt==5){
+        if(p.seq_no==INT16_MAX-1){
+            close(status.fd);
+            m.erase(client_key);
+            cout<<"file transfer of the "<<status.file_name<<" is Completed"<<endl;
             continue;
         }
-        if(cnt!=p.seq_no){
-            write(fd,p.data,(p.size));
+
+        if(status.expected_seq!=p.seq_no){
+            ssize_t byte_written = write(status.fd,p.data,(p.size));
+            cout<<status.file_name<<" "<<byte_written<<" "<<status.fd<<endl;
+            status.expected_seq = p.seq_no;
         }
-        cnt = p.seq_no;
         cout<<"Received the packet byte"<<p.size<<" with the seq_no "<<p.seq_no<<endl;
         ack a;
         a.seq_no = p.seq_no;
         a.checksum = crc32(reinterpret_cast<const char*>(&a.seq_no),sizeof(a.seq_no));
         auto sz = serialize_ack(a,buffer);
-        cout<<a.seq_no<<" "<<a.checksum<<endl;
         sendto(
             sockfd,
             buffer,

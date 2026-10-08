@@ -58,6 +58,7 @@ int main(){
     int cnt = 0;
 
     while( (nbyte =read(fd,buffer,sizeof(buffer)))>0){
+        sleep(1);
         struct packet p{};
         p.seq_no = cnt;
         p.size = nbyte;
@@ -101,13 +102,13 @@ int main(){
                 }
                 auto a = deserialize_ask(buffer);
                 bool flag = false;
-                if(a.seq_no==cnt){
+                if(a.seq_no==cnt && verify_checksum_ack(a)){
                     cout<<"Recieved the acknowledgement for : "<<a.seq_no<<endl;
                     cnt++;
                     flag = true;
                     break;
                 }else{
-                    cout<<"Retransmission of the packet 1 "<<cnt<<" "<<a.seq_no<<endl;
+                    cout<<"Retransmission of the packet "<<cnt<<" "<<a.seq_no<<endl;
                     sendto(
                         sockfd,
                         out,
@@ -138,6 +139,20 @@ int main(){
         }
 
     }
+    st.size = name.size();
+    st.seq_no = INT16_MAX-1;
+    memcpy(&st.data,name.c_str(),name.size());
+    st.checksum = crc32(st.data,name.size());
+    send_size = serialize(st,out);
+    send_size = serialize(st,out);
+    sendto(
+        sockfd,
+        out,
+        send_size,
+        0,
+        (sockaddr*)&server_addr,
+        sizeof(server_addr)
+    );
     close(sockfd);
     close(fd);
 
